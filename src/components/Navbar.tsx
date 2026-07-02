@@ -4,8 +4,11 @@ import React from 'react';
 import { Navbar, Container, Button, Form, InputGroup } from 'react-bootstrap';
 import { FaSearch, FaShoppingCart, FaWhatsapp, FaChevronDown } from 'react-icons/fa';
 import { FiPhone } from 'react-icons/fi';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 export default function AppNavbar() {
+  const { data: session } = useSession();
+
   return (
     <Navbar className="bg-white shadow-sm py-2 border-bottom" sticky="top" expand="xl">
       <Container fluid className="px-4">
@@ -21,7 +24,7 @@ export default function AppNavbar() {
             </span>
           </Navbar.Brand>
 
-          {/* 2. Courses Dropdown Button */}
+          {/* 3. Courses Dropdown Button */}
           <Button className="btn-custom-primary rounded px-3 fw-medium border-0 d-flex align-items-center gap-2">
             Courses <FaChevronDown size={12} />
           </Button>
@@ -52,7 +55,7 @@ export default function AppNavbar() {
 
           {/* 6. My Dashboard */}
           <a href="#" className="text-dark text-decoration-none fw-medium ms-md-4" style={{ fontSize: '0.95rem' }}>
-            My Dashboard
+            {session ? `Hi, ${session.user?.name?.split(' ')[0]}` : 'My Dashboard'}
           </a>
 
           {/* 7. Phone Icon */}
@@ -65,10 +68,24 @@ export default function AppNavbar() {
             <FaWhatsapp size={26} color="#25D366" />
           </a>
 
-          {/* 9. Login Button */}
-          <Button className="btn-custom-primary rounded px-4 fw-medium border-0 ms-md-4 mt-2 mt-md-0" style={{ padding: '8px 0' }}>
-            Login
-          </Button>
+          {/* 9. Login/Logout Right Button (Duplicate from above as requested by design but handling state) */}
+          {session ? (
+            <Button 
+              className="btn-custom-primary rounded px-4 fw-medium border-0 ms-md-4 mt-2 mt-md-0" 
+              style={{ padding: '8px 0' }}
+              onClick={() => signOut()}
+            >
+              Logout
+            </Button>
+          ) : (
+            <Button 
+              className="btn-custom-primary rounded px-4 fw-medium border-0 ms-md-4 mt-2 mt-md-0" 
+              style={{ padding: '8px 0' }}
+              onClick={() => signIn()}
+            >
+              Login
+            </Button>
+          )}
 
         </div>
       </Container>
