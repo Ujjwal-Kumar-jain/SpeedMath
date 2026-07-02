@@ -24,13 +24,10 @@ export default function AppNavbar() {
             </span>
           </Navbar.Brand>
 
-          {/* 3. Courses Dropdown Button */}
-          <Button className="btn-custom-primary rounded px-3 fw-medium border-0 d-flex align-items-center gap-2">
-            Courses <FaChevronDown size={12} />
-          </Button>
+
 
           {/* 4. Search Bar */}
-          <Form className="flex-grow-1 mx-md-2" style={{ minWidth: '250px', maxWidth: '500px' }}>
+          <Form className="flex-grow-1 ms-md-5 me-md-2" style={{ minWidth: '250px', maxWidth: '500px' }}>
             <InputGroup>
               <InputGroup.Text className="bg-white border-end-0" style={{ borderColor: 'var(--primary-custom)', color: '#999' }}>
                 <FaSearch size={14} />
@@ -47,7 +44,7 @@ export default function AppNavbar() {
 
           {/* 5. CAT SANKALP SALE Button */}
           <Button 
-            className="rounded px-3 border-0 d-flex align-items-center gap-2"
+            className="ms-md-auto rounded px-3 border-0 d-flex align-items-center gap-2"
             style={{ backgroundColor: '#9b00ff', color: 'white' }}
           >
             <FaShoppingCart /> <span className="fst-italic fw-bold">CAT SANKALP SALE</span>

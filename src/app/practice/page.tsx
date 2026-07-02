@@ -25,6 +25,7 @@ export default function PracticePage() {
   const [questionCount, setQuestionCount] = useState(1);
   const [showKeypad, setShowKeypad] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+  const askedSignatures = useRef<string[]>([]);
   
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -43,7 +44,7 @@ export default function PracticePage() {
       const res = await fetch('/api/questions/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, difficulty })
+        body: JSON.stringify({ category, difficulty, exclude: askedSignatures.current })
       });
 
       const data = await res.json();
@@ -53,6 +54,9 @@ export default function PracticePage() {
       }
 
       setQuestion(data.question);
+      if (!askedSignatures.current.includes(data.question.signature)) {
+        askedSignatures.current.push(data.question.signature);
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -321,7 +325,7 @@ export default function PracticePage() {
         {/* Bottom Actions */}
         <div className="d-flex justify-content-between w-100 mt-4 px-2" style={{ maxWidth: '900px' }}>
           <span className="text-secondary fw-medium cursor-pointer" onClick={() => router.push('/')} style={{cursor: 'pointer'}}>Exit</span>
-          <span className="text-secondary fw-medium cursor-pointer" onClick={() => { setQuestionCount(1); setTimer(0); fetchQuestion(); }} style={{cursor: 'pointer'}}>Restart</span>
+          <span className="text-secondary fw-medium cursor-pointer" onClick={() => { setQuestionCount(1); setTimer(0); askedSignatures.current = []; fetchQuestion(); }} style={{cursor: 'pointer'}}>Restart</span>
         </div>
       </Container>
     </>

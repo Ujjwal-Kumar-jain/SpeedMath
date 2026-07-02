@@ -69,8 +69,9 @@ export default function Home() {
   };
 
   return (
-    <div className="landing-bg min-vh-100 d-flex align-items-center">
-      <Container>
+    <>
+      <div className="landing-bg min-vh-100 d-flex align-items-center pb-5">
+        <Container>
         <Row className="align-items-center gy-5">
           {/* Left Column */}
           <Col lg={7} className="pe-lg-5">
@@ -271,6 +272,120 @@ export default function Home() {
           </Col>
         </Row>
       </Container>
+      </div>
+
+      {/* --- INFO SECTION (SCROLL DOWN) --- */}
+      <div className="bg-white py-5">
+        <Container className="py-5">
+          <Row className="justify-content-center">
+            <Col lg={10}>
+              
+              {/* Section 1: What is Speed Math */}
+              <div className="mb-5">
+                <h2 className="fw-bold mb-4 text-dark" style={{ letterSpacing: '-1px' }}>What Is Speed Math?</h2>
+                <p className="text-secondary fs-5 mb-4 lh-lg">
+                  Speed Math is the ability to perform mathematical calculations quickly and accurately, a crucial skill for competitive exams like the CAT exam, where time is a key factor. The Quantitative Aptitude section of the CAT tests both mathematical understanding and problem-solving speed. Speed Math can reduce the need for calculators and help candidates manage their time more effectively, leading to improved accuracy and higher scores.
+                </p>
+                <p className="text-dark fw-medium fs-5 mb-4">
+                  CAT aspirants should focus on Speed Math which will help them to improve their performance for several reasons:
+                </p>
+                <Row className="g-4">
+                  <Col md={4}>
+                    <Card className="h-100 border-0 shadow-sm bg-light-blue">
+                      <Card.Body className="p-4">
+                        <h5 className="fw-bold text-primary-custom mb-3">Time Management</h5>
+                        <p className="text-secondary mb-0">The ability to solve math problems faster offers a significant advantage when dealing with a vast number of questions in limited time.</p>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                  <Col md={4}>
+                    <Card className="h-100 border-0 shadow-sm bg-light-blue">
+                      <Card.Body className="p-4">
+                        <h5 className="fw-bold text-primary-custom mb-3">Improved Accuracy</h5>
+                        <p className="text-secondary mb-0">Speed Math isn't just about speed; accuracy is just as important. Speed Math techniques ensure you reach the correct answer while saving time.</p>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                  <Col md={4}>
+                    <Card className="h-100 border-0 shadow-sm bg-light-blue">
+                      <Card.Body className="p-4">
+                        <h5 className="fw-bold text-primary-custom mb-3">Better Focus</h5>
+                        <p className="text-secondary mb-0">By saving time on simpler calculations, you can devote more attention to complex, time-consuming problems that require deeper thought.</p>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                </Row>
+              </div>
+
+              <hr className="my-5 text-muted" />
+
+              {/* Section 2: Formulas */}
+              <div className="mb-5">
+                <h2 className="fw-bold mb-4 text-dark" style={{ letterSpacing: '-1px' }}>Speed Maths Question Formulas</h2>
+                <p className="text-secondary fs-5 mb-4 lh-lg">
+                  Speed Math focuses on using formulas and shortcuts to perform quick calculations, step-wise problem-solving without detailed manual steps. These formulas are important for effectively solving speed math questions in exams like CAT.
+                </p>
+                
+                <div className="bg-light-custom rounded-4 p-4 p-md-5">
+                  <div className="mb-4">
+                    <h5 className="fw-bold text-dark"><span className="text-primary-custom me-2">1.</span>Multiplication Shortcuts</h5>
+                    <p className="text-secondary ms-4 mb-0"><strong>Vedic Math Trick:</strong> Break down two-digit numbers for faster multiplication. For instance, to multiply 98 × 97, calculate 100 - 98 = 2 and 100 - 97 = 3. Subtract 2 + 3 from 100 and multiply the differences (2 × 3 = 6), giving the final answer: 9506.</p>
+                  </div>
+                  <div className="mb-4">
+                    <h5 className="fw-bold text-dark"><span className="text-primary-custom me-2">2.</span>Percentage Shortcuts</h5>
+                    <p className="text-secondary ms-4 mb-0"><strong>10% Rule:</strong> To calculate 10% of any number, simply move the decimal one place to the left. For example, 10% of 450 = 45.<br/><strong>50% Rule:</strong> For 50%, divide the number by 2. For example, 50% of 600 = 300.</p>
+                  </div>
+                  <div className="mb-4">
+                    <h5 className="fw-bold text-dark"><span className="text-primary-custom me-2">3.</span>Square Roots</h5>
+                    <p className="text-secondary ms-4 mb-0">To approximate square roots for numbers close to perfect squares, use nearby values. For example, for √52, use √49 = 7 and adjust the answer slightly.</p>
+                  </div>
+                  <div className="mb-4">
+                    <h5 className="fw-bold text-dark"><span className="text-primary-custom me-2">4.</span>LCM and HCF</h5>
+                    <p className="text-secondary ms-4 mb-0">Use the prime factorization method to calculate the Least Common Multiple (LCM) and Highest Common Factor (HCF) efficiently.</p>
+                  </div>
+                  <div className="mb-0">
+                    <h5 className="fw-bold text-dark"><span className="text-primary-custom me-2">5.</span>Simplification Techniques</h5>
+                    <p className="text-secondary ms-4 mb-0"><strong>BODMAS Rule:</strong> Prioritize the order of operations—Brackets, Orders (powers and roots), Division and Multiplication, Addition and Subtraction—while simplifying complex expressions.</p>
+                  </div>
+                </div>
+              </div>
+
+              <hr className="my-5 text-muted" />
+
+              {/* Section 3: How to improve */}
+              <div className="mb-5">
+                <h2 className="fw-bold mb-4 text-dark" style={{ letterSpacing: '-1px' }}>How Can I Improve Speed Maths for CAT?</h2>
+                <p className="text-secondary fs-5 mb-4 lh-lg">
+                  Improving Speed Math for CAT requires consistent effort and a structured strategy. Here's a step-by-step guide to help develop these skills:
+                </p>
+                
+                <Row className="g-4">
+                  {[
+                    { title: 'Daily Practice', desc: 'Dedicate 30 minutes daily to practicing Speed Math questions using CAT-specific resources. Regular practice will help you become used to the exam format and increase your calculation speed.' },
+                    { title: 'Focus on Accuracy First', desc: 'Initially, aim for accuracy rather than speed. As your confidence and precision improve, it will automatically increase your speed.' },
+                    { title: 'Timed Tests', desc: 'Once you\'re comfortable with Speed Math concepts, start taking timed tests. Gradually reduce the time allotted for each question to be familiar with real exam pressure.' },
+                    { title: 'Mock Tests', desc: 'Full-length CAT mock tests are essential. They provide a real-time exam experience, allowing you to apply Speed Math skills under pressure and refine your time management.' },
+                    { title: 'Revise Regularly', desc: 'Consistent practice and regularity are important for Speed Math. Frequent practice makes the techniques more automatic, and helps identify weak areas for improvement.' },
+                  ].map((item, idx) => (
+                    <Col md={6} key={idx}>
+                      <div className="d-flex align-items-start">
+                        <div className="bg-primary-custom text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-3 flex-shrink-0" style={{ width: '40px', height: '40px' }}>
+                          {idx + 1}
+                        </div>
+                        <div>
+                          <h5 className="fw-bold text-dark mb-2">{item.title}</h5>
+                          <p className="text-secondary">{item.desc}</p>
+                        </div>
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
+              </div>
+
+            </Col>
+          </Row>
+        </Container>
+      </div>
 
       {/* Guest vs Login Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
@@ -382,6 +497,6 @@ export default function Home() {
           </Button>
         </Modal.Body>
       </Modal>
-    </div>
+    </>
   );
 }

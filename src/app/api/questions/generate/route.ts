@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
     const isGuest = !session?.user;
 
-    const { category, difficulty } = await req.json();
+    const { category, difficulty, exclude = [] } = await req.json();
 
     if (!category || !difficulty) {
       return NextResponse.json({ message: 'Missing parameters' }, { status: 400 });
@@ -102,29 +102,36 @@ export async function POST(req: Request) {
     let attempts = 0;
     let isUnique = false;
 
-    // If guest, we don't track history, so every question is "unique" for their session
+    // If guest, we just check against the `exclude` array from this session
     if (isGuest) {
-      const generated = generateNumbers(randomCategory, difficulty);
-      num1 = generated.num1;
-      num2 = generated.num2;
-      questionSignature = `${num1}${operator}${num2}`;
-      isUnique = true;
+      while (attempts < 50 && !isUnique) {
+        const generated = generateNumbers(randomCategory, difficulty);
+        num1 = generated.num1;
+        num2 = generated.num2;
+        questionSignature = `${num1}${operator}${num2}`;
+        
+        if (!exclude.includes(questionSignature)) {
+          isUnique = true;
+        }
+        attempts++;
+      }
     } else {
       await connectToDatabase();
       const userId = (session.user as any).id;
       
-      // Try generating a unique question up to 10 times
-      while (attempts < 10 && !isUnique) {
+      // Try generating a unique question up to 50 times
+      // Must not be in `exclude` array AND not previously saved in `Attempt` DB
+      while (attempts < 50 && !isUnique) {
         const generated = generateNumbers(randomCategory, difficulty);
         num1 = generated.num1;
         num2 = generated.num2;
-        
         questionSignature = `${num1}${operator}${num2}`;
 
-        const existingAttempt = await Attempt.findOne({ userId, questionSignature });
-        
-        if (!existingAttempt) {
-          isUnique = true;
+        if (!exclude.includes(questionSignature)) {
+          const existingAttempt = await Attempt.findOne({ userId, questionSignature });
+          if (!existingAttempt) {
+            isUnique = true;
+          }
         }
         attempts++;
       }
