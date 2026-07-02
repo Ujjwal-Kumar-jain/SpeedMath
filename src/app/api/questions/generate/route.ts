@@ -65,10 +65,7 @@ const generateNumbers = (category: string, difficulty: string) => {
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
+    const isGuest = !session?.user;
 
     const { category, difficulty } = await req.json();
 
@@ -76,7 +73,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Missing parameters' }, { status: 400 });
     }
 
-    const hasPurchased = (session.user as any).hasPurchased;
+    const hasPurchased = !isGuest && (session.user as any).hasPurchased;
 
     // Access Control Logic
     if (!hasPurchased) {
@@ -88,9 +85,6 @@ export async function POST(req: Request) {
       }
     }
 
-    await connectToDatabase();
-
-    const userId = (session.user as any).id;
     let questionSignature = '';
     let num1 = 0;
     let num2 = 0;
@@ -104,20 +98,32 @@ export async function POST(req: Request) {
     let attempts = 0;
     let isUnique = false;
 
-    // Try generating a unique question up to 10 times
-    while (attempts < 10 && !isUnique) {
+    // If guest, we don't track history, so every question is "unique" for their session
+    if (isGuest) {
       const generated = generateNumbers(category, difficulty);
       num1 = generated.num1;
       num2 = generated.num2;
-      
       questionSignature = `${num1}${operator}${num2}`;
-
-      const existingAttempt = await Attempt.findOne({ userId, questionSignature });
+      isUnique = true;
+    } else {
+      await connectToDatabase();
+      const userId = (session.user as any).id;
       
-      if (!existingAttempt) {
-        isUnique = true;
+      // Try generating a unique question up to 10 times
+      while (attempts < 10 && !isUnique) {
+        const generated = generateNumbers(category, difficulty);
+        num1 = generated.num1;
+        num2 = generated.num2;
+        
+        questionSignature = `${num1}${operator}${num2}`;
+
+        const existingAttempt = await Attempt.findOne({ userId, questionSignature });
+        
+        if (!existingAttempt) {
+          isUnique = true;
+        }
+        attempts++;
       }
-      attempts++;
     }
 
     if (!isUnique) {

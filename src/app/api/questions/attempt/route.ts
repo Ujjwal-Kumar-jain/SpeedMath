@@ -7,10 +7,7 @@ import Attempt from '@/models/Attempt';
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session?.user) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
-    }
+    const isGuest = !session?.user;
 
     const { category, difficulty, signature, num1, num2, operator, userAnswer } = await req.json();
 
@@ -26,23 +23,25 @@ export async function POST(req: Request) {
 
     const isCorrect = Number(userAnswer) === correctAnswer;
 
-    await connectToDatabase();
-    
-    const userId = (session.user as any).id;
+    // Skip DB stuff for guests
+    if (!isGuest) {
+      await connectToDatabase();
+      const userId = (session.user as any).id;
 
-    // Check if they already attempted it just in case
-    const existing = await Attempt.findOne({ userId, questionSignature: signature });
-    if (existing) {
-      return NextResponse.json({ message: 'Question already attempted', isCorrect }, { status: 400 });
+      // Check if they already attempted it just in case
+      const existing = await Attempt.findOne({ userId, questionSignature: signature });
+      if (existing) {
+        return NextResponse.json({ message: 'Question already attempted', isCorrect }, { status: 400 });
+      }
+
+      await Attempt.create({
+        userId,
+        category,
+        difficulty,
+        questionSignature: signature,
+        isCorrect,
+      });
     }
-
-    await Attempt.create({
-      userId,
-      category,
-      difficulty,
-      questionSignature: signature,
-      isCorrect,
-    });
 
     return NextResponse.json({ 
       isCorrect, 

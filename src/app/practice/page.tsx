@@ -59,13 +59,17 @@ export default function PracticePage() {
     }
   }, [category, difficulty]);
 
+  const isGuest = searchParams.get('guest') === 'true';
+
   useEffect(() => {
-    if (status === 'authenticated') {
+    if (status === 'authenticated' || (status === 'unauthenticated' && isGuest)) {
       fetchQuestion();
-    } else if (status === 'unauthenticated') {
-      router.push('/login');
+    } else if (status === 'unauthenticated' && !isGuest) {
+      // Pass the current practice URL so they return here after logging in
+      const callbackUrl = encodeURIComponent(`/practice?category=${category}&difficulty=${difficulty}`);
+      router.push(`/login?callbackUrl=${callbackUrl}`);
     }
-  }, [status, fetchQuestion, router]);
+  }, [status, fetchQuestion, router, isGuest, category, difficulty]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
