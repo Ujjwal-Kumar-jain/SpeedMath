@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Form, Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { FaBolt, FaPlusCircle, FaMinusCircle, FaTimesCircle, FaDivide, FaLock } from 'react-icons/fa';
+import { Container, Row, Col, Card, Form, Button, Modal, OverlayTrigger, Tooltip, InputGroup } from 'react-bootstrap';
+import { FaBolt, FaPlusCircle, FaMinusCircle, FaTimesCircle, FaDivide, FaLock, FaShoppingCart, FaUserCircle, FaEnvelope, FaUser } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -26,6 +26,10 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Signup Modal State
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [signupName, setSignupName] = useState('');
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -43,6 +47,43 @@ export default function Home() {
     } else {
       const opsParam = selectedOperations.join(',');
       router.push(`/practice?category=${opsParam}&difficulty=${difficulty}`);
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: signupName, email, password })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      // Auto login after signup
+      const loginRes = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (loginRes?.error) {
+        setError(loginRes.error);
+        setLoading(false);
+      } else {
+        const opsParam = selectedOperations.join(',');
+        router.push(`/practice?category=${opsParam}&difficulty=${difficulty}`);
+      }
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
     }
   };
 
@@ -388,45 +429,60 @@ export default function Home() {
       </div>
 
       {/* Guest vs Login Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header closeButton className="border-0 pb-0">
-          <Modal.Title className="fw-bold text-dark">Login to Play</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="pt-2 pb-4">
-          <p className="text-muted mb-4 small">
-            Log in to unlock all features, track your speed, and save to the leaderboard!
-          </p>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered contentClassName="border-0 rounded-4 shadow-lg">
+        <Modal.Header closeButton className="border-0 pb-0"></Modal.Header>
+        <Modal.Body className="px-4 px-md-5 pb-5 pt-0">
+          <div className="text-center mb-4">
+            <div className="bg-light-blue text-primary-custom rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '64px', height: '64px' }}>
+              <FaUserCircle size={32} />
+            </div>
+            <h3 className="fw-bold text-dark mb-1">Login to Play</h3>
+            <p className="text-muted small">Log in to unlock all features and save your score!</p>
+          </div>
 
-          {error && <div className="alert alert-danger py-2 small">{error}</div>}
+          {error && <div className="alert alert-danger py-2 small border-0 rounded-3 shadow-sm">{error}</div>}
 
           <Form onSubmit={handleLogin}>
             <Form.Group className="mb-3" controlId="modalEmail">
-              <Form.Label className="fw-medium small mb-1">Email address</Form.Label>
-              <Form.Control 
-                type="email" 
-                placeholder="Enter email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <Form.Label className="fw-medium small mb-1 text-secondary">Email address</Form.Label>
+              <InputGroup className="shadow-sm rounded-3 overflow-hidden">
+                <InputGroup.Text className="bg-light border-0 text-muted px-3">
+                  <FaEnvelope />
+                </InputGroup.Text>
+                <Form.Control 
+                  type="email" 
+                  placeholder="name@example.com" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="border-0 bg-light py-2 shadow-none"
+                />
+              </InputGroup>
             </Form.Group>
 
             <Form.Group className="mb-4" controlId="modalPassword">
-              <Form.Label className="fw-medium small mb-1">Password</Form.Label>
-              <Form.Control 
-                type="password" 
-                placeholder="Password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <Form.Label className="fw-medium small mb-1 text-secondary">Password</Form.Label>
+              <InputGroup className="shadow-sm rounded-3 overflow-hidden">
+                <InputGroup.Text className="bg-light border-0 text-muted px-3">
+                  <FaLock />
+                </InputGroup.Text>
+                <Form.Control 
+                  type="password" 
+                  placeholder="••••••••" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="border-0 bg-light py-2 shadow-none"
+                />
+              </InputGroup>
             </Form.Group>
 
             <Button 
               variant="primary" 
               type="submit"
-              className="w-100 py-2 fw-bold btn-custom-primary mb-3"
+              className="w-100 py-2 fw-bold btn-custom-primary rounded-3 shadow-sm mb-3"
               disabled={loading}
+              style={{ fontSize: '1.05rem' }}
             >
               {loading ? 'Logging in...' : 'Login & Play'}
             </Button>
@@ -434,12 +490,12 @@ export default function Home() {
 
           <div className="text-center position-relative my-3">
             <hr className="text-muted" />
-            <span className="bg-white px-2 position-absolute top-50 start-50 translate-middle text-muted small fw-medium" style={{ backgroundColor: 'white' }}>OR</span>
+            <span className="px-3 position-absolute top-50 start-50 translate-middle text-muted small fw-medium" style={{ backgroundColor: '#fff' }}>OR</span>
           </div>
 
           <Button 
             variant="light" 
-            className="w-100 py-3 fw-bold border text-secondary"
+            className="w-100 py-3 fw-bold border rounded-3 text-secondary shadow-sm"
             onClick={() => {
               const opsParam = selectedOperations.join(',');
               router.push(`/practice?category=${opsParam}&difficulty=${difficulty}&guest=true`);
@@ -448,11 +504,106 @@ export default function Home() {
             Play as Guest
           </Button>
 
-          <div className="text-center mt-3">
+          <div className="text-center mt-4">
             <span className="text-muted small">Don&apos;t have an account? </span>
-            <Link href={`/register?callbackUrl=${encodeURIComponent(`/practice?category=${selectedOperations.join(',')}&difficulty=${difficulty}`)}`} className="text-primary-custom fw-semibold text-decoration-none small">
+            <span 
+              className="text-primary-custom fw-bold small cursor-pointer" 
+              style={{cursor: 'pointer'}} 
+              onClick={() => { setShowModal(false); setShowSignupModal(true); }}
+            >
               Sign up
-            </Link>
+            </span>
+          </div>
+        </Modal.Body>
+      </Modal>
+
+      {/* Signup Modal for Practice Page */}
+      <Modal show={showSignupModal} onHide={() => setShowSignupModal(false)} centered contentClassName="border-0 rounded-4 shadow-lg">
+        <Modal.Header closeButton className="border-0 pb-0"></Modal.Header>
+        <Modal.Body className="px-4 px-md-5 pb-5 pt-0">
+          <div className="text-center mb-4">
+            <div className="bg-light-blue text-primary-custom rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style={{ width: '64px', height: '64px' }}>
+              <FaBolt size={28} />
+            </div>
+            <h3 className="fw-bold text-dark mb-1">Create an Account</h3>
+            <p className="text-muted small">Join Coachify to unlock premium features and track your speed!</p>
+          </div>
+
+          {error && <div className="alert alert-danger py-2 small border-0 rounded-3 shadow-sm">{error}</div>}
+
+          <Form onSubmit={handleSignup}>
+            <Form.Group className="mb-3" controlId="pageSignupName">
+              <Form.Label className="fw-medium small mb-1 text-secondary">Full Name</Form.Label>
+              <InputGroup className="shadow-sm rounded-3 overflow-hidden">
+                <InputGroup.Text className="bg-light border-0 text-muted px-3">
+                  <FaUser />
+                </InputGroup.Text>
+                <Form.Control 
+                  type="text" 
+                  placeholder="John Doe" 
+                  value={signupName}
+                  onChange={(e) => setSignupName(e.target.value)}
+                  required
+                  className="border-0 bg-light py-2 shadow-none"
+                />
+              </InputGroup>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="pageSignupEmail">
+              <Form.Label className="fw-medium small mb-1 text-secondary">Email address</Form.Label>
+              <InputGroup className="shadow-sm rounded-3 overflow-hidden">
+                <InputGroup.Text className="bg-light border-0 text-muted px-3">
+                  <FaEnvelope />
+                </InputGroup.Text>
+                <Form.Control 
+                  type="email" 
+                  placeholder="name@example.com" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="border-0 bg-light py-2 shadow-none"
+                />
+              </InputGroup>
+            </Form.Group>
+
+            <Form.Group className="mb-4" controlId="pageSignupPassword">
+              <Form.Label className="fw-medium small mb-1 text-secondary">Password</Form.Label>
+              <InputGroup className="shadow-sm rounded-3 overflow-hidden">
+                <InputGroup.Text className="bg-light border-0 text-muted px-3">
+                  <FaLock />
+                </InputGroup.Text>
+                <Form.Control 
+                  type="password" 
+                  placeholder="••••••••" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="border-0 bg-light py-2 shadow-none"
+                />
+              </InputGroup>
+            </Form.Group>
+
+            <Button 
+              variant="primary" 
+              type="submit"
+              className="w-100 py-2 fw-bold btn-custom-primary rounded-3 shadow-sm mb-4"
+              disabled={loading}
+              style={{ fontSize: '1.05rem' }}
+            >
+              {loading ? 'Signing up...' : 'Sign Up & Play'}
+            </Button>
+          </Form>
+
+          <div className="text-center">
+            <span className="text-muted small">Already have an account? </span>
+            <span 
+              className="text-primary-custom fw-bold small cursor-pointer" 
+              style={{cursor: 'pointer'}} 
+              onClick={() => { setShowSignupModal(false); setShowModal(true); }}
+            >
+              Login
+            </span>
           </div>
         </Modal.Body>
       </Modal>
@@ -461,10 +612,15 @@ export default function Home() {
       <Modal show={showPremiumModal} onHide={() => setShowPremiumModal(false)} centered>
         <Modal.Header closeButton className="border-0 pb-0">
           <Modal.Title className="fw-bold text-dark d-flex align-items-center">
-            <FaBolt className="text-warning me-2" /> Unlock Premium
+            <FaShoppingCart className="text-primary-custom me-2" /> CAT Sankalp Sale
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="pt-3 pb-4">
+          <div className="bg-light-blue rounded-3 p-3 mb-4 text-center border border-primary-custom">
+            <h4 className="fw-bold text-primary-custom mb-2">Unlock Premium at <span className="text-danger">25% OFF!</span></h4>
+            <p className="text-dark small mb-0 fw-medium">Use code <span className="badge bg-primary-custom fs-6 px-3 py-2 ms-1">SANKALP25</span> at checkout</p>
+          </div>
+
           <p className="text-muted mb-4">
             Take your speed math skills to the next level with our premium features. Perfect for competitive exams like CAT!
           </p>
@@ -489,8 +645,7 @@ export default function Home() {
             className="w-100 py-3 fw-bold text-dark"
             onClick={() => {
               setShowPremiumModal(false);
-              // In the future, this could route to a pricing page or stripe checkout
-              alert('Premium checkout flow coming soon!');
+              alert('Premium checkout flow coming soon! Do not forget to apply code SANKALP25.');
             }}
           >
             Upgrade to Premium Now
