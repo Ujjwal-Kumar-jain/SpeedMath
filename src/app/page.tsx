@@ -41,8 +41,8 @@ export default function Home() {
       setError(res.error);
       setLoading(false);
     } else {
-      const op = selectedOperations[0];
-      router.push(`/practice?category=${op}&difficulty=${difficulty}`);
+      const opsParam = selectedOperations.join(',');
+      router.push(`/practice?category=${opsParam}&difficulty=${difficulty}`);
     }
   };
 
@@ -54,8 +54,18 @@ export default function Home() {
     }
   };
 
-  const selectAll = () => {
-    setSelectedOperations(['Addition', 'Subtraction', 'Multiplication', 'Division']);
+  const availableOperations = isFreeUser 
+    ? ['Addition', 'Subtraction'] 
+    : ['Addition', 'Subtraction', 'Multiplication', 'Division'];
+
+  const allSelected = availableOperations.length > 0 && availableOperations.every(op => selectedOperations.includes(op));
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedOperations([]);
+    } else {
+      setSelectedOperations([...availableOperations]);
+    }
   };
 
   return (
@@ -65,7 +75,17 @@ export default function Home() {
           {/* Left Column */}
           <Col lg={7} className="pe-lg-5">
             <h1 className="display-4 fw-bold mb-4">
-              <span className="text-dark">CAT</span> <span className="text-primary-custom">Speed Maths</span><br />
+              <span className="text-dark">CAT</span>{' '}
+              <span 
+                className="fw-bold" 
+                style={{ 
+                  background: 'linear-gradient(45deg, #f39c12, #5C35A5)', 
+                  WebkitBackgroundClip: 'text', 
+                  WebkitTextFillColor: 'transparent' 
+                }}
+              >
+                Speed Maths
+              </span><br />
               <span className="text-dark">Practice Questions</span>
             </h1>
             
@@ -107,11 +127,11 @@ export default function Home() {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h6 className="fw-bold mb-0">Select operations</h6>
                   <small 
-                    className="text-primary-custom cursor-pointer" 
-                    onClick={selectAll}
+                    className="text-primary-custom cursor-pointer fw-semibold" 
+                    onClick={toggleSelectAll}
                     style={{cursor: 'pointer'}}
                   >
-                    Select All
+                    {allSelected ? 'Deselect All' : 'Select All'}
                   </small>
                 </div>
                 <small className="text-muted d-block mb-3">You can select multiple operations</small>
@@ -152,8 +172,8 @@ export default function Home() {
                       className={`operation-box rounded-3 p-3 d-flex align-items-center justify-content-between border ${selectedOperations.includes('Multiplication') ? 'border-primary-custom bg-light-blue' : 'bg-white'} ${isFreeUser ? 'opacity-50 text-muted' : ''}`}
                       onClick={() => isFreeUser ? setShowPremiumModal(true) : toggleOperation('Multiplication')}
                     >
-                      <div className="d-flex align-items-center fw-medium">
-                        <FaTimesCircle className={`${isFreeUser ? 'text-secondary' : 'text-warning'} me-2 fs-5`} /> Multiplication
+                      <div className={`d-flex align-items-center fw-bold ${isFreeUser ? 'text-secondary' : 'text-warning'}`}>
+                        <FaTimesCircle className="me-2 fs-5" /> Multiplication
                       </div>
                       {isFreeUser ? <FaLock className="text-secondary" /> : (
                         <Form.Check 
@@ -169,8 +189,8 @@ export default function Home() {
                       className={`operation-box rounded-3 p-3 d-flex align-items-center justify-content-between border ${selectedOperations.includes('Division') ? 'border-primary-custom bg-light-blue' : 'bg-white'} ${isFreeUser ? 'opacity-50 text-muted' : ''}`}
                       onClick={() => isFreeUser ? setShowPremiumModal(true) : toggleOperation('Division')}
                     >
-                      <div className="d-flex align-items-center fw-medium">
-                        <FaDivide className={`${isFreeUser ? 'text-secondary' : 'text-primary-custom'} me-2 fs-5`} /> Division
+                      <div className={`d-flex align-items-center fw-bold ${isFreeUser ? 'text-secondary' : 'text-primary-custom'}`}>
+                        <FaDivide className="me-2 fs-5" /> Division
                       </div>
                       {isFreeUser ? <FaLock className="text-secondary" /> : (
                         <Form.Check 
@@ -304,10 +324,10 @@ export default function Home() {
 
           <Button 
             variant="light" 
-            className="w-100 py-2 fw-bold border text-secondary"
+            className="w-100 py-3 fw-bold border text-secondary"
             onClick={() => {
-              const op = selectedOperations[0];
-              router.push(`/practice?category=${op}&difficulty=${difficulty}&guest=true`);
+              const opsParam = selectedOperations.join(',');
+              router.push(`/practice?category=${opsParam}&difficulty=${difficulty}&guest=true`);
             }}
           >
             Play as Guest
@@ -315,7 +335,7 @@ export default function Home() {
 
           <div className="text-center mt-3">
             <span className="text-muted small">Don&apos;t have an account? </span>
-            <Link href={`/register?callbackUrl=${encodeURIComponent(`/practice?category=${selectedOperations[0]}&difficulty=${difficulty}`)}`} className="text-primary-custom fw-semibold text-decoration-none small">
+            <Link href={`/register?callbackUrl=${encodeURIComponent(`/practice?category=${selectedOperations.join(',')}&difficulty=${difficulty}`)}`} className="text-primary-custom fw-semibold text-decoration-none small">
               Sign up
             </Link>
           </div>

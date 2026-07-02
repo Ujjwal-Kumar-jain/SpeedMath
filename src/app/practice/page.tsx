@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Container, Card, Button, Row, Col, Spinner, Form } from 'react-bootstrap';
 import { useSession } from 'next-auth/react';
+import { FaBackspace } from 'react-icons/fa';
 
 export default function PracticePage() {
   const searchParams = useSearchParams();
@@ -92,8 +93,6 @@ export default function PracticePage() {
     if (question.operator === '*') expectedAnswer = question.num1 * question.num2;
     if (question.operator === '/') expectedAnswer = question.num1 / question.num2;
 
-    const expectedLength = String(expectedAnswer).length;
-    
     // If the user typed enough characters (or a negative sign makes it longer)
     // Note: this auto-submits as soon as the lengths match
     if (userAnswer.replace('-', '').length >= String(Math.abs(expectedAnswer)).length) {
@@ -114,10 +113,8 @@ export default function PracticePage() {
   }, [feedback, fetchQuestion]);
 
   const handleNumpadClick = (val: string) => {
-    if (feedback) return;
-    if (val === 'C') {
-      setUserAnswer('');
-    } else if (val === 'del') {
+    if (feedback) setFeedback(null);
+    if (val === 'del') {
       setUserAnswer((prev) => prev.slice(0, -1));
     } else {
       setUserAnswer((prev) => prev + val);
@@ -185,17 +182,16 @@ export default function PracticePage() {
         `}</style>
       )}
 
-      <Container className="py-5 d-flex justify-content-center">
-        <Card className="shadow-lg border-0 overflow-hidden" style={{ width: '100%', maxWidth: '800px', borderRadius: '12px' }}>
+      <Container className="py-3 d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+        <Card className="shadow-sm border-0 overflow-hidden" style={{ width: '100%', maxWidth: '900px', borderRadius: '8px', border: '1px solid #eaeaea' }}>
           
           {/* Header - Light Blue */}
-          <div className="d-flex justify-content-between align-items-center px-4 py-3" style={{ backgroundColor: '#eef6fc', borderBottom: '1px solid #d0e3f2' }}>
-            <div style={{ width: '100px' }}>
-              <div className="fw-semibold text-secondary mb-1" style={{ fontSize: '0.9rem' }}>{questionCount}/10</div>
-              <div style={{ height: '3px', width: '100%', backgroundColor: '#007bff', borderRadius: '2px' }}></div>
+          <div className="d-flex justify-content-between align-items-center px-4 py-3" style={{ backgroundColor: '#e9f1f8' }}>
+            <div style={{ width: '100px' }} className="fw-medium text-dark">
+              {questionCount}/10
             </div>
             
-            <div className="fw-bold fs-6" style={{ color: '#007bff' }}>
+            <div className="fw-bold" style={{ color: '#007bff', fontSize: '1rem' }}>
               Time: {formatTime(timer)}
             </div>
             
@@ -205,13 +201,13 @@ export default function PracticePage() {
                 id="focus-switch"
                 checked={focusMode}
                 onChange={(e) => setFocusMode(e.target.checked)}
-                label={<span className="text-secondary fw-medium ms-1" style={{fontSize: '0.9rem'}}>Focus</span>}
+                label={<span className="text-dark fw-medium ms-1" style={{fontSize: '0.9rem'}}>Focus</span>}
               />
             </div>
           </div>
 
           {/* Body */}
-          <Card.Body className="p-4 p-md-5 bg-white d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '400px' }}>
+          <Card.Body className="p-3 p-md-4 bg-white d-flex flex-column align-items-center justify-content-center" style={{ minHeight: showKeypad ? 'auto' : '450px', transition: 'min-height 0.2s ease' }}>
             
             {error ? (
               <div className="text-center">
@@ -226,41 +222,37 @@ export default function PracticePage() {
             ) : (
               <>
                 {/* Question Text */}
-              <h1 className="fw-bold mb-4 text-dark" style={{ fontSize: '5.5rem', letterSpacing: '-2px' }}>
+              <h1 className="fw-bold mb-3 text-dark" style={{ fontSize: showKeypad ? '4.5rem' : '6rem', letterSpacing: '-2px', transition: 'all 0.2s ease' }}>
                 {question.num1} {question.operator} {question.num2}
               </h1>
 
               {/* Input Box */}
-              <div className="w-100 mt-2" style={{ maxWidth: '500px' }}>
+              <div className="w-100 mt-1" style={{ maxWidth: '500px' }}>
                 <Form.Control
                   ref={inputRef}
                   type="number"
                   value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
+                  onChange={(e) => {
+                    setUserAnswer(e.target.value);
+                    if (feedback) setFeedback(null);
+                  }}
                   onKeyDown={handleKeyDown}
-                  disabled={!!feedback || submitting}
+                  disabled={submitting}
                   className="text-center fw-bold rounded-3"
                   style={{ 
-                    height: '130px',
-                    borderColor: feedback ? (feedback.isCorrect ? '#28a745' : '#dc3545') : '#e0e0e0', 
-                    borderWidth: '1px',
+                    height: showKeypad ? '110px' : '140px',
+                    borderColor: feedback ? (feedback.isCorrect ? '#28a745' : '#dc3545') : '#007bff', 
+                    borderWidth: '2px',
                     boxShadow: 'none',
                     color: feedback ? (feedback.isCorrect ? '#28a745' : '#dc3545') : '#222',
-                    fontSize: '5.5rem',
+                    fontSize: showKeypad ? '4.5rem' : '6rem',
                     letterSpacing: '-1px',
-                    backgroundColor: '#f6f6f6'
+                    backgroundColor: '#f9f9f9',
+                    transition: 'all 0.2s ease'
                   }}
                   autoFocus
                 />
               </div>
-
-                {/* Feedback Overlay */}
-                {feedback && !feedback.isCorrect && (
-                  <div className="mt-3 text-danger fw-bold fs-5 text-center">
-                    Correct Answer: {feedback.correctAnswer}
-                    <div className="small text-muted fw-normal mt-1">(Press Enter for next question)</div>
-                  </div>
-                )}
 
                 {/* Show Keypad Toggle */}
                 <div 
@@ -273,58 +265,64 @@ export default function PracticePage() {
 
                 {/* Collapsible Keypad */}
                 {showKeypad && (
-                  <div className="numpad-container mx-auto mt-4" style={{ maxWidth: '300px', width: '100%' }}>
+                  <div className="numpad-container mx-auto mt-3" style={{ maxWidth: '200px', width: '100%' }}>
+                    <style>{`
+                      .keypad-btn {
+                        background-color: #ffffff;
+                        border: 1px solid #eaeaea;
+                        border-radius: 12px;
+                        font-size: 1.3rem;
+                        color: #222;
+                        transition: background-color 0.1s;
+                      }
+                      .keypad-btn:active {
+                        background-color: #f0f0f0;
+                      }
+                    `}</style>
                     <Row className="g-2 mb-2">
                       {['7', '8', '9'].map((num) => (
                         <Col xs={4} key={num}>
-                          <Button variant="light" className="w-100 py-3 fw-bold fs-5 border shadow-sm" onClick={() => handleNumpadClick(num)}>{num}</Button>
+                          <Button variant="light" className="w-100 py-2 shadow-none keypad-btn" onClick={() => handleNumpadClick(num)}>{num}</Button>
                         </Col>
                       ))}
                     </Row>
                     <Row className="g-2 mb-2">
                       {['4', '5', '6'].map((num) => (
                         <Col xs={4} key={num}>
-                          <Button variant="light" className="w-100 py-3 fw-bold fs-5 border shadow-sm" onClick={() => handleNumpadClick(num)}>{num}</Button>
+                          <Button variant="light" className="w-100 py-2 shadow-none keypad-btn" onClick={() => handleNumpadClick(num)}>{num}</Button>
                         </Col>
                       ))}
                     </Row>
                     <Row className="g-2 mb-2">
                       {['1', '2', '3'].map((num) => (
                         <Col xs={4} key={num}>
-                          <Button variant="light" className="w-100 py-3 fw-bold fs-5 border shadow-sm" onClick={() => handleNumpadClick(num)}>{num}</Button>
+                          <Button variant="light" className="w-100 py-2 shadow-none keypad-btn" onClick={() => handleNumpadClick(num)}>{num}</Button>
                         </Col>
                       ))}
                     </Row>
-                    <Row className="g-2 mb-3">
+                    <Row className="g-2 mb-3 justify-content-end">
+                      <Col xs={4}></Col>
                       <Col xs={4}>
-                        <Button variant="danger" className="w-100 py-3 fw-bold fs-5 border shadow-sm" onClick={() => handleNumpadClick('C')}>C</Button>
+                        <Button variant="light" className="w-100 py-2 shadow-none keypad-btn" onClick={() => handleNumpadClick('0')}>0</Button>
                       </Col>
                       <Col xs={4}>
-                        <Button variant="light" className="w-100 py-3 fw-bold fs-5 border shadow-sm" onClick={() => handleNumpadClick('0')}>0</Button>
-                      </Col>
-                      <Col xs={4}>
-                        <Button variant="warning" className="w-100 py-3 fw-bold fs-5 border shadow-sm text-white" onClick={() => handleNumpadClick('del')}>←</Button>
+                        <Button variant="light" className="w-100 py-2 shadow-none keypad-btn d-flex align-items-center justify-content-center" onClick={() => handleNumpadClick('del')}>
+                          <FaBackspace className="text-dark" style={{fontSize: '1.2rem'}} />
+                        </Button>
                       </Col>
                     </Row>
                   </div>
                 )}
-
-              {/* Submit button completely removed as per request! */}
-              {/* Next button ONLY shows when feedback is present AND incorrect */}
-              <div className="mt-4 w-100" style={{ maxWidth: '400px' }}>
-                {feedback && !feedback.isCorrect && (
-                  <Button variant="primary" className="w-100 py-3 fw-bold btn-custom-primary" onClick={() => {
-                    setQuestionCount(prev => prev + 1);
-                    fetchQuestion();
-                  }}>
-                    Next Question
-                  </Button>
-                )}
-              </div>
               </>
             )}
           </Card.Body>
         </Card>
+
+        {/* Bottom Actions */}
+        <div className="d-flex justify-content-between w-100 mt-4 px-2" style={{ maxWidth: '900px' }}>
+          <span className="text-secondary fw-medium cursor-pointer" onClick={() => router.push('/')} style={{cursor: 'pointer'}}>Exit</span>
+          <span className="text-secondary fw-medium cursor-pointer" onClick={() => { setQuestionCount(1); setTimer(0); fetchQuestion(); }} style={{cursor: 'pointer'}}>Restart</span>
+        </div>
       </Container>
     </>
   );

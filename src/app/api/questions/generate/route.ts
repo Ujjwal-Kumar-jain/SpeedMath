@@ -90,17 +90,21 @@ export async function POST(req: Request) {
     let num2 = 0;
     let operator = '+';
 
-    if (category === 'Addition') operator = '+';
-    if (category === 'Subtraction') operator = '-';
-    if (category === 'Multiplication') operator = '*';
-    if (category === 'Division') operator = '/';
+    // category string could be "Addition,Subtraction"
+    const selectedCategories = category.split(',');
+    const randomCategory = selectedCategories[Math.floor(Math.random() * selectedCategories.length)];
+
+    if (randomCategory === 'Addition') operator = '+';
+    if (randomCategory === 'Subtraction') operator = '-';
+    if (randomCategory === 'Multiplication') operator = '*';
+    if (randomCategory === 'Division') operator = '/';
 
     let attempts = 0;
     let isUnique = false;
 
     // If guest, we don't track history, so every question is "unique" for their session
     if (isGuest) {
-      const generated = generateNumbers(category, difficulty);
+      const generated = generateNumbers(randomCategory, difficulty);
       num1 = generated.num1;
       num2 = generated.num2;
       questionSignature = `${num1}${operator}${num2}`;
@@ -111,7 +115,7 @@ export async function POST(req: Request) {
       
       // Try generating a unique question up to 10 times
       while (attempts < 10 && !isUnique) {
-        const generated = generateNumbers(category, difficulty);
+        const generated = generateNumbers(randomCategory, difficulty);
         num1 = generated.num1;
         num2 = generated.num2;
         
