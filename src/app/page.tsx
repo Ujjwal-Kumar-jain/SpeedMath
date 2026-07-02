@@ -1,65 +1,185 @@
-import Image from "next/image";
+'use client';
+
+import React, { useState } from 'react';
+import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
+import { FaBolt, FaPlusCircle, FaMinusCircle, FaTimesCircle, FaDivide } from 'react-icons/fa';
 
 export default function Home() {
+  const [difficulty, setDifficulty] = useState('Easy');
+  const [selectedOperations, setSelectedOperations] = useState<string[]>(['Addition']);
+
+  const toggleOperation = (op: string) => {
+    if (selectedOperations.includes(op)) {
+      setSelectedOperations(selectedOperations.filter(item => item !== op));
+    } else {
+      setSelectedOperations([...selectedOperations, op]);
+    }
+  };
+
+  const selectAll = () => {
+    setSelectedOperations(['Addition', 'Subtraction', 'Multiplication', 'Division']);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="landing-bg min-vh-100 d-flex align-items-center">
+      <Container>
+        <Row className="align-items-center gy-5">
+          {/* Left Column */}
+          <Col lg={7} className="pe-lg-5">
+            <h1 className="display-4 fw-bold mb-4">
+              <span className="text-dark">CAT</span> <span className="text-primary-custom">Speed Maths</span><br />
+              <span className="text-dark">Practice Questions</span>
+            </h1>
+            
+            <p className="text-secondary mb-5 fs-5">
+              This tool, designed to test your adeptness in performing rapid and precise calculations
+              such as addition, subtraction, division and multiplication on randomly generated
+              numbers. This swift and engaging speed test is suitable for to improve calculation speed.
+              Simply choose the preferred options below and hit the &apos;Start&apos; button. Best of luck on your
+              quest for numerical mastery!
+            </p>
+
+            <div className="d-flex gap-3 flex-wrap">
+              <div className="stat-box bg-white rounded-3 shadow-sm p-3 text-center flex-grow-1">
+                <h3 className="fw-bold mb-1">20K+</h3>
+                <small className="text-muted">Total number of users</small>
+              </div>
+              <div className="stat-box bg-white rounded-3 shadow-sm p-3 text-center flex-grow-1">
+                <h3 className="fw-bold mb-1">4</h3>
+                <small className="text-muted">Operations available</small>
+              </div>
+              <div className="stat-box bg-white rounded-3 shadow-sm p-3 text-center flex-grow-1">
+                <h3 className="fw-bold mb-1">3</h3>
+                <small className="text-muted">Difficulty levels</small>
+              </div>
+            </div>
+          </Col>
+
+          {/* Right Column (Card) */}
+          <Col lg={5}>
+            <Card className="shadow-lg border-0 rounded-4 overflow-hidden">
+              <div className="card-header-custom text-white p-4">
+                <h4 className="mb-0 d-flex align-items-center fw-semibold">
+                  <FaBolt className="text-warning me-2 fs-3" />
+                  <em>Start Practicing Now...</em>
+                </h4>
+              </div>
+              
+              <Card.Body className="p-4 bg-light-custom">
+                {/* Operations Section */}
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                  <h6 className="fw-bold mb-0">Select operations</h6>
+                  <small 
+                    className="text-primary-custom cursor-pointer" 
+                    onClick={selectAll}
+                    style={{cursor: 'pointer'}}
+                  >
+                    Select All
+                  </small>
+                </div>
+                <small className="text-muted d-block mb-3">You can select multiple operations</small>
+
+                <Row className="g-3 mb-4">
+                  <Col xs={6}>
+                    <div 
+                      className={`operation-box rounded-3 p-3 d-flex align-items-center justify-content-between border ${selectedOperations.includes('Addition') ? 'border-primary-custom bg-light-blue' : 'bg-white'}`}
+                      onClick={() => toggleOperation('Addition')}
+                    >
+                      <div className="d-flex align-items-center text-primary-custom fw-medium">
+                        <FaPlusCircle className="text-success me-2 fs-5" /> Addition
+                      </div>
+                      <Form.Check 
+                        type="checkbox" 
+                        checked={selectedOperations.includes('Addition')} 
+                        readOnly 
+                      />
+                    </div>
+                  </Col>
+                  <Col xs={6}>
+                    <div 
+                      className={`operation-box rounded-3 p-3 d-flex align-items-center justify-content-between border ${selectedOperations.includes('Subtraction') ? 'border-primary-custom bg-light-blue' : 'bg-white'}`}
+                      onClick={() => toggleOperation('Subtraction')}
+                    >
+                      <div className="d-flex align-items-center text-dark fw-medium">
+                        <FaMinusCircle className="text-danger me-2 fs-5" /> Subtraction
+                      </div>
+                      <Form.Check 
+                        type="checkbox" 
+                        checked={selectedOperations.includes('Subtraction')} 
+                        readOnly 
+                      />
+                    </div>
+                  </Col>
+                  <Col xs={6}>
+                    <div 
+                      className={`operation-box rounded-3 p-3 d-flex align-items-center justify-content-between border ${selectedOperations.includes('Multiplication') ? 'border-primary-custom bg-light-blue' : 'bg-white'}`}
+                      onClick={() => toggleOperation('Multiplication')}
+                    >
+                      <div className="d-flex align-items-center text-dark fw-medium">
+                        <FaTimesCircle className="text-warning me-2 fs-5" /> Multiplication
+                      </div>
+                      <Form.Check 
+                        type="checkbox" 
+                        checked={selectedOperations.includes('Multiplication')} 
+                        readOnly 
+                      />
+                    </div>
+                  </Col>
+                  <Col xs={6}>
+                    <div 
+                      className={`operation-box rounded-3 p-3 d-flex align-items-center justify-content-between border ${selectedOperations.includes('Division') ? 'border-primary-custom bg-light-blue' : 'bg-white'}`}
+                      onClick={() => toggleOperation('Division')}
+                    >
+                      <div className="d-flex align-items-center text-dark fw-medium">
+                        <FaDivide className="text-primary-custom me-2 fs-5" /> Division
+                      </div>
+                      <Form.Check 
+                        type="checkbox" 
+                        checked={selectedOperations.includes('Division')} 
+                        readOnly 
+                      />
+                    </div>
+                  </Col>
+                </Row>
+
+                {/* Difficulty Section */}
+                <h6 className="fw-bold mb-3">Select difficulty</h6>
+                <div className="d-flex gap-2 mb-4">
+                  <Button 
+                    variant={difficulty === 'Easy' ? 'outline-primary' : 'outline-secondary'} 
+                    className={`rounded-pill px-4 ${difficulty === 'Easy' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'}`}
+                    onClick={() => setDifficulty('Easy')}
+                  >
+                    Easy
+                  </Button>
+                  <Button 
+                    variant={difficulty === 'Medium' ? 'outline-primary' : 'outline-secondary'} 
+                    className={`rounded-pill px-4 ${difficulty === 'Medium' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'}`}
+                    onClick={() => setDifficulty('Medium')}
+                  >
+                    Medium
+                  </Button>
+                  <Button 
+                    variant={difficulty === 'Hard' ? 'outline-primary' : 'outline-secondary'} 
+                    className={`rounded-pill px-4 ${difficulty === 'Hard' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'}`}
+                    onClick={() => setDifficulty('Hard')}
+                  >
+                    Hard
+                  </Button>
+                </div>
+
+                <Button variant="primary" size="lg" className="w-100 rounded-3 fw-bold btn-custom-primary mb-3">
+                  Let&apos;s get started
+                </Button>
+                
+                <div className="text-center">
+                  <a href="#" className="text-primary-custom text-decoration-none fw-medium">View leaderboard</a>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 }

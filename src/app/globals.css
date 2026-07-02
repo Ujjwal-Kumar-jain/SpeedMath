@@ -1,26 +1,68 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --primary-custom: #5C35A5;
+  --bg-light-blue: #ebe4fc;
+  --bg-main: #f2eff9;
+  --card-header-bg: #422378;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-main) !important;
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+.landing-bg {
+  background-color: var(--bg-main);
+}
+
+.text-primary-custom {
+  color: var(--primary-custom) !important;
+}
+
+.bg-light-blue {
+  background-color: var(--bg-light-blue) !important;
+}
+
+.bg-light-custom {
+  background-color: #fafdfd !important;
+}
+
+.card-header-custom {
+  background-color: var(--card-header-bg);
+  border-bottom: none;
+}
+
+.btn-custom-primary {
+  background-color: var(--primary-custom) !important;
+  border-color: var(--primary-custom) !important;
+}
+
+.btn-custom-primary:hover {
+  background-color: #4a2b85 !important;
+  border-color: #4a2b85 !important;
+}
+
+.operation-box {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.operation-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.border-primary-custom {
+  border-color: var(--primary-custom) !important;
+}
+
+.border-light-gray {
+  border-color: #e0e0e0 !important;
+}
+
+.stat-box {
+  min-width: 120px;
 }
