@@ -32,10 +32,9 @@ export default function Home() {
             </h1>
             
             <p className="text-secondary mb-5 fs-5">
-              This tool, designed to test your adeptness in performing rapid and precise calculations
-              such as addition, subtraction, division and multiplication on randomly generated
-              numbers. This swift and engaging speed test is suitable for to improve calculation speed.
-              Simply choose the preferred options below and hit the &apos;Start&apos; button. Best of luck on your
+              At Coachify, we empower students with accessible and transformative education to shape future-ready minds. 
+              This Speed Maths tool is designed to test and improve your rapid calculation skills across addition, 
+              subtraction, multiplication, and division. Choose your options and hit &apos;Let&apos;s get started&apos; on your 
               quest for numerical mastery!
             </p>
 
