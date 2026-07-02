@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { FaBolt, FaPlusCircle, FaMinusCircle, FaTimesCircle, FaDivide } from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [difficulty, setDifficulty] = useState('Easy');
   const [selectedOperations, setSelectedOperations] = useState<string[]>(['Addition']);
 
@@ -167,7 +169,17 @@ export default function Home() {
                   </Button>
                 </div>
 
-                <Button variant="primary" size="lg" className="w-100 rounded-3 fw-bold btn-custom-primary mb-3">
+                <Button 
+                  variant="primary" 
+                  size="lg" 
+                  className="w-100 rounded-3 fw-bold btn-custom-primary mb-3"
+                  onClick={() => {
+                    if (selectedOperations.length === 0) return alert('Select at least one operation!');
+                    // For MVP, we just take the first selected operation
+                    const op = selectedOperations[0];
+                    router.push(`/practice?category=${op}&difficulty=${difficulty}`);
+                  }}
+                >
                   Let&apos;s get started
                 </Button>
                 
