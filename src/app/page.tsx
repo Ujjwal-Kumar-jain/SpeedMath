@@ -336,10 +336,6 @@ export default function Home() {
                 >
                   Let&apos;s get started
                 </Button>
-                
-                <div className="text-center">
-                  <a href="#" className="text-primary-custom text-decoration-none fw-medium">View leaderboard</a>
-                </div>
               </Card.Body>
             </Card>
           </Col>

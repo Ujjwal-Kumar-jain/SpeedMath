@@ -6,6 +6,7 @@ import { FaShieldAlt, FaCheckCircle, FaLock, FaBolt, FaTimesCircle, FaPlusCircle
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import Script from 'next/script';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -67,40 +68,86 @@ export default function CheckoutPage() {
     setError('');
 
     try {
-      // Simulate payment delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: finalPrice })
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Payment failed');
+        throw new Error(data.message || 'Payment initiation failed');
       }
 
-      // Update session dynamically
-      await update({ hasPurchased: true });
-      
-      setSuccess(true);
-      
-      // Redirect after a short success message
-      setTimeout(() => {
-        router.push('/practice');
-      }, 2000);
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Enter the Key ID generated from the Dashboard
+        amount: data.order.amount,
+        currency: data.order.currency,
+        name: "Coachify",
+        description: "Premium Upgrade",
+        order_id: data.order.id,
+        handler: async function (response: any) {
+          try {
+            setLoading(true);
+            const verifyRes = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              })
+            });
+
+            const verifyData = await verifyRes.json();
+
+            if (!verifyRes.ok) {
+              throw new Error(verifyData.message || 'Payment verification failed');
+            }
+
+            // Update session dynamically
+            await update({ hasPurchased: true });
+            
+            setSuccess(true);
+            
+            // Redirect after a short success message
+            setTimeout(() => {
+              router.push('/dashboard');
+            }, 2000);
+          } catch (err: any) {
+            setError(err.message || 'An error occurred during payment verification');
+            setLoading(false);
+          }
+        },
+        prefill: {
+          name: session?.user?.name || "",
+          email: session?.user?.email || "",
+        },
+        theme: {
+          color: "#9b00ff"
+        },
+        modal: {
+          ondismiss: function() {
+            setLoading(false);
+          }
+        }
+      };
+
+      const paymentObject = new (window as any).Razorpay(options);
+      paymentObject.open();
 
     } catch (err: any) {
       setError(err.message || 'An error occurred during checkout');
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-vh-100 bg-light py-5">
-      <Container className="py-4">
+    <>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+      <div className="min-vh-100 bg-light py-5">
+        <Container className="py-4">
         {success ? (
           <Row className="justify-content-center">
             <Col md={8} lg={6} className="text-center">
@@ -268,6 +315,7 @@ export default function CheckoutPage() {
           transition: color 0.2s ease-in-out;
         }
       `}} />
-    </div>
+      </div>
+    </>
   );
 }
