@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Container, Card, Button, Row, Col, Spinner, Form } from 'react-bootstrap';
 import { useSession } from 'next-auth/react';
 import { FaBackspace } from 'react-icons/fa';
 
-export default function PracticePage() {
+function PracticeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -343,5 +343,13 @@ export default function PracticePage() {
         </div>
       </Container>
     </>
+  );
+}
+
+export default function PracticePage() {
+  return (
+    <Suspense fallback={<div className="min-vh-100 d-flex justify-content-center align-items-center"><Spinner animation="border" variant="primary" /></div>}>
+      <PracticeContent />
+    </Suspense>
   );
 }

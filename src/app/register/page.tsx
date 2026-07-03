@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Container, Form, Button, Card, Alert } from 'react-bootstrap';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function Register() {
+function RegisterContent() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -105,5 +105,13 @@ export default function Register() {
         </Card.Body>
       </Card>
     </Container>
+  );
+}
+
+export default function Register() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }
