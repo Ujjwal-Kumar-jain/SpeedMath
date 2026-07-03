@@ -256,35 +256,59 @@ export default function Home() {
                     Easy
                   </Button>
 
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={isFreeUser ? <Tooltip id="tooltip-medium">Premium Required</Tooltip> : <></>}
-                  >
+                  {isFreeUser ? (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id="tooltip-medium">Premium Required</Tooltip>}
+                    >
+                      <div className="d-inline-block">
+                        <Button 
+                          variant={difficulty === 'Medium' ? 'outline-primary' : 'outline-secondary'} 
+                          className={`rounded-pill px-4 d-flex align-items-center gap-2 ${difficulty === 'Medium' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'} opacity-50`}
+                          onClick={() => setShowPremiumModal(true)}
+                        >
+                          <FaLock className="small" /> Medium
+                        </Button>
+                      </div>
+                    </OverlayTrigger>
+                  ) : (
                     <div className="d-inline-block">
                       <Button 
                         variant={difficulty === 'Medium' ? 'outline-primary' : 'outline-secondary'} 
-                        className={`rounded-pill px-4 d-flex align-items-center gap-2 ${difficulty === 'Medium' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'} ${isFreeUser ? 'opacity-50' : ''}`}
-                        onClick={() => isFreeUser ? setShowPremiumModal(true) : setDifficulty('Medium')}
+                        className={`rounded-pill px-4 d-flex align-items-center gap-2 ${difficulty === 'Medium' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'}`}
+                        onClick={() => setDifficulty('Medium')}
                       >
-                        {isFreeUser && <FaLock className="small" />} Medium
+                        Medium
                       </Button>
                     </div>
-                  </OverlayTrigger>
+                  )}
 
-                  <OverlayTrigger
-                    placement="top"
-                    overlay={isFreeUser ? <Tooltip id="tooltip-hard">Premium Required</Tooltip> : <></>}
-                  >
+                  {isFreeUser ? (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={<Tooltip id="tooltip-hard">Premium Required</Tooltip>}
+                    >
+                      <div className="d-inline-block">
+                        <Button 
+                          variant={difficulty === 'Hard' ? 'outline-primary' : 'outline-secondary'} 
+                          className={`rounded-pill px-4 d-flex align-items-center gap-2 ${difficulty === 'Hard' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'} opacity-50`}
+                          onClick={() => setShowPremiumModal(true)}
+                        >
+                          <FaLock className="small" /> Hard
+                        </Button>
+                      </div>
+                    </OverlayTrigger>
+                  ) : (
                     <div className="d-inline-block">
                       <Button 
                         variant={difficulty === 'Hard' ? 'outline-primary' : 'outline-secondary'} 
-                        className={`rounded-pill px-4 d-flex align-items-center gap-2 ${difficulty === 'Hard' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'} ${isFreeUser ? 'opacity-50' : ''}`}
-                        onClick={() => isFreeUser ? setShowPremiumModal(true) : setDifficulty('Hard')}
+                        className={`rounded-pill px-4 d-flex align-items-center gap-2 ${difficulty === 'Hard' ? 'border-primary-custom text-primary-custom bg-light-blue' : 'border-light-gray text-dark bg-white'}`}
+                        onClick={() => setDifficulty('Hard')}
                       >
-                        {isFreeUser && <FaLock className="small" />} Hard
+                        Hard
                       </Button>
                     </div>
-                  </OverlayTrigger>
+                  )}
                 </div>
 
                 <Button 

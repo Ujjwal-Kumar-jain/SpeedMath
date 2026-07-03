@@ -67,6 +67,20 @@ export default function PracticePage() {
   const isGuest = searchParams.get('guest') === 'true';
 
   useEffect(() => {
+    if (status === 'loading') return;
+
+    // Check Premium Lock First
+    const isPremiumCategory = category.includes('Multiplication') || category.includes('Division');
+    const isPremiumDifficulty = difficulty === 'Medium' || difficulty === 'Hard';
+    const hasPurchased = session?.user && (session.user as any).hasPurchased;
+    const isFreeUser = !hasPurchased;
+
+    // If it's a guest or free user trying to access premium, boot them to checkout
+    if (isFreeUser && (isPremiumCategory || isPremiumDifficulty)) {
+      router.push('/checkout');
+      return;
+    }
+
     if (status === 'authenticated' || (status === 'unauthenticated' && isGuest)) {
       fetchQuestion();
     } else if (status === 'unauthenticated' && !isGuest) {
@@ -74,7 +88,7 @@ export default function PracticePage() {
       const callbackUrl = encodeURIComponent(`/practice?category=${category}&difficulty=${difficulty}`);
       router.push(`/login?callbackUrl=${callbackUrl}`);
     }
-  }, [status, fetchQuestion, router, isGuest, category, difficulty]);
+  }, [status, session, fetchQuestion, router, isGuest, category, difficulty]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;

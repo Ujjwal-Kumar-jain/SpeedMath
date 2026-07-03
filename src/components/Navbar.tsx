@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Navbar, Container, Button, Form, InputGroup, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { FaSearch, FaShoppingCart, FaWhatsapp, FaChevronDown, FaBolt, FaTimesCircle, FaPlusCircle, FaUserCircle, FaEnvelope, FaLock, FaUser } from 'react-icons/fa';
+import { Navbar, Container, Button, Form, InputGroup, Modal, OverlayTrigger, Tooltip, Badge } from 'react-bootstrap';
+import { FaSearch, FaShoppingCart, FaWhatsapp, FaChevronDown, FaBolt, FaTimesCircle, FaPlusCircle, FaUserCircle, FaEnvelope, FaLock, FaUser, FaCrown } from 'react-icons/fa';
 import { FiPhone } from 'react-icons/fi';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -118,6 +118,15 @@ export default function AppNavbar() {
               <FaSearch size={18} />
             </a>
 
+            {/* Premium Badge (Mobile Only) */}
+            <div className="d-lg-none d-flex align-items-center">
+              {(session?.user as any)?.hasPurchased && (
+                <Badge bg="warning" text="dark" className="rounded-pill shadow-sm d-flex align-items-center" style={{ fontSize: '0.7rem', padding: '0.4em 0.5em' }}>
+                  <FaCrown className="text-danger" />
+                </Badge>
+              )}
+            </div>
+
             {/* CAT SANKALP SALE Button (Desktop Only) */}
             <Button 
               className="d-none d-lg-flex rounded px-3 border-0 align-items-center gap-2 me-lg-4"
@@ -128,9 +137,24 @@ export default function AppNavbar() {
             </Button>
 
             {/* My Dashboard (Desktop Only) */}
-            <a href="#" className="d-none d-lg-block text-dark text-decoration-none fw-medium" style={{ fontSize: '0.95rem' }}>
-              {session ? `Hi, ${session.user?.name?.split(' ')[0]}` : 'My Dashboard'}
-            </a>
+            <div className="d-none d-lg-flex align-items-center">
+              {session ? (
+                <div className="d-flex align-items-center">
+                  <span className="text-dark fw-medium me-2" style={{ fontSize: '0.95rem' }}>
+                    Hi, {session.user?.name?.split(' ')[0]}
+                  </span>
+                  {(session.user as any)?.hasPurchased && (
+                    <Badge bg="warning" text="dark" className="rounded-pill d-flex align-items-center shadow-sm" style={{ fontSize: '0.75rem', padding: '0.4em 0.6em' }}>
+                      <FaCrown className="me-1 text-danger" /> Premium
+                    </Badge>
+                  )}
+                </div>
+              ) : (
+                <a href="#" className="text-dark text-decoration-none fw-medium" style={{ fontSize: '0.95rem' }}>
+                  My Dashboard
+                </a>
+              )}
+            </div>
 
 
             {/* WhatsApp Icon (Both) */}
