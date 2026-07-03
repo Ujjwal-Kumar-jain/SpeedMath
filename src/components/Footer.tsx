@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-top pt-5 pb-4 mt-auto">
+    <footer className="bg-white border-top pt-5 mt-auto">
       <Container>
         {/* Top Header Row */}
         <Row className="align-items-center mb-5">

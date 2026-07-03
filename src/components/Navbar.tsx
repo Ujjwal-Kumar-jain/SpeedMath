@@ -139,7 +139,7 @@ export default function AppNavbar() {
             {/* My Dashboard (Desktop Only) */}
             <div className="d-none d-lg-flex align-items-center">
               {session ? (
-                <div className="d-flex align-items-center">
+                <Link href="/dashboard" className="d-flex align-items-center text-decoration-none hover-primary">
                   <span className="text-dark fw-medium me-2" style={{ fontSize: '0.95rem' }}>
                     Hi, {session.user?.name?.split(' ')[0]}
                   </span>
@@ -148,7 +148,7 @@ export default function AppNavbar() {
                       <FaCrown className="me-1 text-danger" /> Premium
                     </Badge>
                   )}
-                </div>
+                </Link>
               ) : (
                 <a href="#" className="text-dark text-decoration-none fw-medium" style={{ fontSize: '0.95rem' }}>
                   My Dashboard
@@ -199,50 +199,83 @@ export default function AppNavbar() {
       <Modal show={showSaleModal} onHide={() => setShowSaleModal(false)} centered contentClassName="border-0 rounded-4 shadow-lg overflow-hidden">
         <Modal.Header closeButton className="border-0 pb-0 pt-4 px-4 px-md-5">
           <Modal.Title className="fw-bold text-dark d-flex align-items-center fs-4">
-            <FaShoppingCart className="text-primary-custom me-2" /> CAT Sankalp Sale
+            {(session?.user as any)?.hasPurchased ? (
+              <><FaCrown className="text-warning me-2" /> Premium Member</>
+            ) : (
+              <><FaShoppingCart className="text-primary-custom me-2" /> CAT Sankalp Sale</>
+            )}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="px-4 px-md-5 pb-5 pt-3">
-          <div className="bg-light-blue rounded-4 p-4 mb-4 text-center border border-primary-custom position-relative shadow-sm" style={{ backgroundColor: '#f0e6ff' }}>
-            <h4 className="fw-bold text-primary-custom mb-3">Unlock Premium at <span className="text-danger">25% OFF!</span></h4>
-            <p className="text-dark small mb-0 fw-medium">Use code <span className="badge bg-white text-primary-custom border border-primary-custom fs-6 px-3 py-2 ms-1 shadow-sm">SANKALP25</span> at checkout</p>
-          </div>
+          {(session?.user as any)?.hasPurchased ? (
+            <div className="text-center">
+              <div className="bg-light-blue rounded-4 p-4 mb-4 border border-primary-custom shadow-sm" style={{ backgroundColor: '#f0e6ff' }}>
+                <FaCrown size={48} className="text-warning mb-3" />
+                <h4 className="fw-bold text-primary-custom mb-2">You are a Premium Member!</h4>
+                <p className="text-dark small mb-0 fw-medium">Thank you for your purchase.</p>
+              </div>
+              <p className="text-muted mb-4 px-2">
+                You have full access to advanced operations, all difficulties, and detailed analytics on your personal dashboard!
+              </p>
+              <Button 
+                className="w-100 py-3 fw-bold border-0 shadow rounded-3 mt-2"
+                style={{ background: 'linear-gradient(135deg, #9b00ff 0%, #6a00ff 100%)', color: '#fff', fontSize: '1.05rem' }}
+                onClick={() => {
+                  setShowSaleModal(false);
+                  router.push('/dashboard');
+                }}
+              >
+                Go to My Dashboard
+              </Button>
+            </div>
+          ) : (
+            <>
+              <div className="bg-light-blue rounded-4 p-4 mb-4 text-center border border-primary-custom position-relative shadow-sm" style={{ backgroundColor: '#f0e6ff' }}>
+                <h4 className="fw-bold text-primary-custom mb-3">Unlock Premium at <span className="text-danger">25% OFF!</span></h4>
+                <p className="text-dark small mb-0 fw-medium">Use code <span className="badge bg-white text-primary-custom border border-primary-custom fs-6 px-3 py-2 ms-1 shadow-sm">SANKALP25</span> at checkout</p>
+              </div>
 
-          <p className="text-muted mb-4 text-center px-2">
-            Take your speed math skills to the next level with our premium features. Perfect for competitive exams like CAT!
-          </p>
-          
-          <ul className="list-unstyled mb-4">
-            <li className="d-flex align-items-center mb-3">
-              <div className="text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px', backgroundColor: '#9b00ff' }}>
-                <FaTimesCircle size={14} />
-              </div>
-              <span className="fw-medium text-dark">Advanced Operations (Multiplication & Division)</span>
-            </li>
-            <li className="d-flex align-items-center mb-3">
-              <div className="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px' }}>
-                <FaBolt size={14} />
-              </div>
-              <span className="fw-medium text-dark">Higher Difficulties (Medium & Hard)</span>
-            </li>
-            <li className="d-flex align-items-center mb-3">
-              <div className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px' }}>
-                <FaPlusCircle size={14} />
-              </div>
-              <span className="fw-medium text-dark">Save all attempts and view detailed analytics</span>
-            </li>
-          </ul>
+              <p className="text-muted mb-4 text-center px-2">
+                Take your speed math skills to the next level with our premium features. Perfect for competitive exams like CAT!
+              </p>
+              
+              <ul className="list-unstyled mb-4">
+                <li className="d-flex align-items-center mb-3">
+                  <div className="text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px', backgroundColor: '#9b00ff' }}>
+                    <FaTimesCircle size={14} />
+                  </div>
+                  <span className="fw-medium text-dark">Advanced Operations (Multiplication & Division)</span>
+                </li>
+                <li className="d-flex align-items-center mb-3">
+                  <div className="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px' }}>
+                    <FaBolt size={14} />
+                  </div>
+                  <span className="fw-medium text-dark">Higher Difficulties (Medium & Hard)</span>
+                </li>
+                <li className="d-flex align-items-center mb-3">
+                  <div className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px' }}>
+                    <FaPlusCircle size={14} />
+                  </div>
+                  <span className="fw-medium text-dark">Save all attempts and view detailed analytics</span>
+                </li>
+              </ul>
 
-          <Button 
-            className="w-100 py-3 fw-bold border-0 shadow rounded-3 mt-2"
-            style={{ background: 'linear-gradient(135deg, #9b00ff 0%, #6a00ff 100%)', color: '#fff', fontSize: '1.05rem' }}
-            onClick={() => {
-              setShowSaleModal(false);
-              router.push('/checkout');
-            }}
-          >
-            Upgrade to Premium Now
-          </Button>
+              <Button 
+                className="w-100 py-3 fw-bold border-0 shadow rounded-3 mt-2"
+                style={{ background: 'linear-gradient(135deg, #9b00ff 0%, #6a00ff 100%)', color: '#fff', fontSize: '1.05rem' }}
+                onClick={() => {
+                  setShowSaleModal(false);
+                  if (!session) {
+                    setShowLoginModal(true);
+                  } else {
+                    router.push('/checkout');
+                  }
+                }}
+              >
+                Upgrade to Premium Now
+              </Button>
+            </>
+          )}
         </Modal.Body>
       </Modal>
 
