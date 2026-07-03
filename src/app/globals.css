@@ -22,6 +22,10 @@ body {
   color: var(--primary-custom) !important;
 }
 
+.bg-primary-custom {
+  background-color: var(--primary-custom) !important;
+}
+
 .bg-light-blue {
   background-color: var(--bg-light-blue) !important;
 }

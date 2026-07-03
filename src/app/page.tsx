@@ -319,7 +319,7 @@ export default function Home() {
       <div className="bg-white py-5">
         <Container className="py-5">
           <Row className="justify-content-center">
-            <Col lg={10}>
+            <Col lg={12}>
               
               {/* Section 1: What is Speed Math */}
               <div className="mb-5">
@@ -609,43 +609,49 @@ export default function Home() {
       </Modal>
 
       {/* Premium Features Modal */}
-      <Modal show={showPremiumModal} onHide={() => setShowPremiumModal(false)} centered>
-        <Modal.Header closeButton className="border-0 pb-0">
-          <Modal.Title className="fw-bold text-dark d-flex align-items-center">
+      <Modal show={showPremiumModal} onHide={() => setShowPremiumModal(false)} centered contentClassName="border-0 rounded-4 shadow-lg overflow-hidden">
+        <Modal.Header closeButton className="border-0 pb-0 pt-4 px-4 px-md-5">
+          <Modal.Title className="fw-bold text-dark d-flex align-items-center fs-4">
             <FaShoppingCart className="text-primary-custom me-2" /> CAT Sankalp Sale
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="pt-3 pb-4">
-          <div className="bg-light-blue rounded-3 p-3 mb-4 text-center border border-primary-custom">
-            <h4 className="fw-bold text-primary-custom mb-2">Unlock Premium at <span className="text-danger">25% OFF!</span></h4>
-            <p className="text-dark small mb-0 fw-medium">Use code <span className="badge bg-primary-custom fs-6 px-3 py-2 ms-1">SANKALP25</span> at checkout</p>
+        <Modal.Body className="px-4 px-md-5 pb-5 pt-3">
+          <div className="bg-light-blue rounded-4 p-4 mb-4 text-center border border-primary-custom position-relative shadow-sm" style={{ backgroundColor: '#f0e6ff' }}>
+            <h4 className="fw-bold text-primary-custom mb-3">Unlock Premium at <span className="text-danger">25% OFF!</span></h4>
+            <p className="text-dark small mb-0 fw-medium">Use code <span className="badge bg-white text-primary-custom border border-primary-custom fs-6 px-3 py-2 ms-1 shadow-sm">SANKALP25</span> at checkout</p>
           </div>
 
-          <p className="text-muted mb-4">
+          <p className="text-muted mb-4 text-center px-2">
             Take your speed math skills to the next level with our premium features. Perfect for competitive exams like CAT!
           </p>
           
           <ul className="list-unstyled mb-4">
             <li className="d-flex align-items-center mb-3">
-              <FaTimesCircle className="text-primary-custom me-3 fs-5" />
-              <span className="fw-medium">Advanced Operations (Multiplication & Division)</span>
+              <div className="text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px', backgroundColor: '#9b00ff' }}>
+                <FaTimesCircle size={14} />
+              </div>
+              <span className="fw-medium text-dark">Advanced Operations (Multiplication & Division)</span>
             </li>
             <li className="d-flex align-items-center mb-3">
-              <FaBolt className="text-warning me-3 fs-5" />
-              <span className="fw-medium">Higher Difficulties (Medium & Hard)</span>
+              <div className="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px' }}>
+                <FaBolt size={14} />
+              </div>
+              <span className="fw-medium text-dark">Higher Difficulties (Medium & Hard)</span>
             </li>
             <li className="d-flex align-items-center mb-3">
-              <FaPlusCircle className="text-success me-3 fs-5" />
-              <span className="fw-medium">Save all attempts and view detailed analytics</span>
+              <div className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px' }}>
+                <FaPlusCircle size={14} />
+              </div>
+              <span className="fw-medium text-dark">Save all attempts and view detailed analytics</span>
             </li>
           </ul>
 
           <Button 
-            variant="warning" 
-            className="w-100 py-3 fw-bold text-dark"
+            className="w-100 py-3 fw-bold border-0 shadow rounded-3 mt-2"
+            style={{ background: 'linear-gradient(135deg, #9b00ff 0%, #6a00ff 100%)', color: '#fff', fontSize: '1.05rem' }}
             onClick={() => {
               setShowPremiumModal(false);
-              alert('Premium checkout flow coming soon! Do not forget to apply code SANKALP25.');
+              router.push('/checkout');
             }}
           >
             Upgrade to Premium Now

@@ -101,18 +101,21 @@ export default function Footer() {
           </Col>
         </Row>
 
-        <hr className="mt-5 mb-4 text-muted" />
-
-        <Row className="align-items-center">
-          <Col md={6} className="text-center text-md-start mb-3 mb-md-0">
-            <span className="text-muted small">Copyright © 2026 Coachify Pvt. Ltd. All rights reserved.</span>
-          </Col>
-          <Col md={6} className="text-center text-md-end">
-            <Link href="#" className="text-muted text-decoration-none small me-4 hover-dark">Privacy policy</Link>
-            <Link href="#" className="text-muted text-decoration-none small hover-dark">Terms & Conditions</Link>
-          </Col>
-        </Row>
       </Container>
+      
+      {/* Full width purple copyright section */}
+      <div style={{ backgroundColor: '#9b00ff' }} className="py-4 mt-5 text-center text-white">
+        <Container>
+          <div className="fw-medium mb-1" style={{ fontSize: '0.9rem' }}>
+            Copyright © 2026 Coachify Pvt. Ltd. All rights reserved.
+          </div>
+          <div className="fw-medium d-flex justify-content-center align-items-center gap-2" style={{ fontSize: '0.9rem' }}>
+            <Link href="#" className="text-white-50 text-decoration-none hover-white">Privacy policy</Link>
+            <span className="text-white-50">|</span>
+            <Link href="#" className="text-white-50 text-decoration-none hover-white">Terms & Conditions</Link>
+          </div>
+        </Container>
+      </div>
       
       <style dangerouslySetInnerHTML={{__html: `
         .hover-primary:hover {
@@ -121,6 +124,10 @@ export default function Footer() {
         }
         .hover-dark:hover {
           color: #000 !important;
+          transition: color 0.2s ease-in-out;
+        }
+        .hover-white:hover {
+          color: #fff !important;
           transition: color 0.2s ease-in-out;
         }
       `}} />

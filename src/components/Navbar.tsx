@@ -6,9 +6,11 @@ import { FaSearch, FaShoppingCart, FaWhatsapp, FaChevronDown, FaBolt, FaTimesCir
 import { FiPhone } from 'react-icons/fi';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function AppNavbar() {
   const { data: session } = useSession();
+  const router = useRouter();
   const [showSaleModal, setShowSaleModal] = useState(false);
 
   // Login & Signup Modal State
@@ -80,22 +82,20 @@ export default function AppNavbar() {
   return (
     <Navbar className="bg-white shadow-sm py-2 border-bottom" sticky="top" expand="xl">
       <Container fluid className="px-4">
-        <div className="d-flex align-items-center w-100 flex-wrap gap-2 gap-md-3">
+        <div className="d-flex align-items-center w-100">
           
           {/* 1. Logo */}
-          <Navbar.Brand href="/" className="d-flex flex-column align-items-start me-0">
-            <span className="text-primary-custom fw-bold lh-1" style={{ fontSize: '1.8rem', letterSpacing: '-1px' }}>
+          <Navbar.Brand href="/" className="d-flex flex-column align-items-start me-4 me-lg-5">
+            <span className="text-primary-custom fw-bold lh-1" style={{ fontSize: '1.4rem', letterSpacing: '-1px' }}>
               Coachify
             </span>
-            <span className="text-primary-custom fw-semibold" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>
+            <span className="text-primary-custom fw-semibold" style={{ fontSize: '0.65rem', letterSpacing: '0.5px' }}>
               Learn • Lead • Succeed
             </span>
           </Navbar.Brand>
 
-
-
-          {/* 4. Search Bar */}
-          <Form className="flex-grow-1 ms-md-5 me-md-2" style={{ minWidth: '250px', maxWidth: '500px' }}>
+          {/* 2. Full Search Bar (Desktop Only) */}
+          <Form className="d-none d-lg-block" style={{ width: '100%', maxWidth: '450px' }}>
             <InputGroup>
               <InputGroup.Text className="bg-white border-end-0" style={{ borderColor: 'var(--primary-custom)', color: '#999' }}>
                 <FaSearch size={14} />
@@ -110,101 +110,111 @@ export default function AppNavbar() {
             </InputGroup>
           </Form>
 
-          {/* 5. CAT SANKALP SALE Button */}
-          <Button 
-            className="ms-md-auto rounded px-3 border-0 d-flex align-items-center gap-2"
-            style={{ backgroundColor: '#9b00ff', color: 'white' }}
-            onClick={() => setShowSaleModal(true)}
-          >
-            <FaShoppingCart /> <span className="fst-italic fw-bold">CAT SANKALP SALE</span>
-          </Button>
+          {/* Right Side Icons & Buttons Container */}
+          <div className="d-flex align-items-center gap-2 gap-md-4 ms-auto">
+            
+            {/* Search Icon (Mobile Only) */}
+            <a href="#" className="d-block d-lg-none text-dark mt-1">
+              <FaSearch size={18} />
+            </a>
 
-          {/* 6. My Dashboard */}
-          <a href="#" className="text-dark text-decoration-none fw-medium ms-md-4" style={{ fontSize: '0.95rem' }}>
-            {session ? `Hi, ${session.user?.name?.split(' ')[0]}` : 'My Dashboard'}
-          </a>
-
-          {/* 7. Phone Icon */}
-          <a href="#" className="text-dark ms-md-4">
-            <FiPhone size={22} />
-          </a>
-
-          {/* 8. WhatsApp Icon */}
-          <OverlayTrigger
-            placement="bottom"
-            trigger="click"
-            rootClose
-            overlay={
-              <Tooltip id="whatsapp-tooltip" className="fs-6 px-2 py-1 fw-bold">
-                +91 83060 56876
-              </Tooltip>
-            }
-          >
-            <div className="ms-md-4 cursor-pointer" style={{ cursor: 'pointer' }}>
-              <FaWhatsapp size={26} color="#25D366" />
-            </div>
-          </OverlayTrigger>
-
-          {/* 9. Login/Logout Right Button (Duplicate from above as requested by design but handling state) */}
-          {session ? (
+            {/* CAT SANKALP SALE Button (Desktop Only) */}
             <Button 
-              className="btn-custom-primary rounded px-4 fw-medium border-0 ms-md-4 mt-2 mt-md-0" 
-              style={{ padding: '8px 0' }}
-              onClick={() => signOut()}
+              className="d-none d-lg-flex rounded px-3 border-0 align-items-center gap-2 me-lg-4"
+              style={{ backgroundColor: '#9b00ff', color: 'white' }}
+              onClick={() => setShowSaleModal(true)}
             >
-              Logout
+              <FaShoppingCart /> <span className="fst-italic fw-bold">CAT SANKALP SALE</span>
             </Button>
-          ) : (
-            <Button 
-              className="btn-custom-primary rounded px-4 fw-medium border-0 ms-md-4 mt-2 mt-md-0" 
-              style={{ padding: '8px 0' }}
-              onClick={() => setShowLoginModal(true)}
-            >
-              Login
-            </Button>
-          )}
 
+            {/* My Dashboard (Desktop Only) */}
+            <a href="#" className="d-none d-lg-block text-dark text-decoration-none fw-medium" style={{ fontSize: '0.95rem' }}>
+              {session ? `Hi, ${session.user?.name?.split(' ')[0]}` : 'My Dashboard'}
+            </a>
+
+
+            {/* WhatsApp Icon (Both) */}
+            <OverlayTrigger
+              placement="bottom"
+              trigger="click"
+              rootClose
+              overlay={
+                <Tooltip id="whatsapp-tooltip" className="fs-6 px-2 py-1 fw-bold">
+                  +91 83060 56876
+                </Tooltip>
+              }
+            >
+              <div className="cursor-pointer">
+                <FaWhatsapp size={22} color="#25D366" />
+              </div>
+            </OverlayTrigger>
+
+            {/* Login/Logout Button (Both, smaller padding on mobile) */}
+            {session ? (
+              <Button 
+                className="btn-custom-primary rounded px-3 px-md-4 py-1 py-md-2 fw-medium border-0"
+                style={{ fontSize: '0.9rem' }}
+                onClick={() => signOut()}
+              >
+                Logout
+              </Button>
+            ) : (
+              <Button 
+                className="btn-custom-primary rounded px-3 px-md-4 py-1 py-md-2 fw-medium border-0"
+                style={{ fontSize: '0.9rem' }}
+                onClick={() => setShowLoginModal(true)}
+              >
+                Login
+              </Button>
+            )}
+          </div>
         </div>
       </Container>
 
       {/* Premium Sale Modal */}
-      <Modal show={showSaleModal} onHide={() => setShowSaleModal(false)} centered>
-        <Modal.Header closeButton className="border-0 pb-0">
-          <Modal.Title className="fw-bold text-dark d-flex align-items-center">
+      <Modal show={showSaleModal} onHide={() => setShowSaleModal(false)} centered contentClassName="border-0 rounded-4 shadow-lg overflow-hidden">
+        <Modal.Header closeButton className="border-0 pb-0 pt-4 px-4 px-md-5">
+          <Modal.Title className="fw-bold text-dark d-flex align-items-center fs-4">
             <FaShoppingCart className="text-primary-custom me-2" /> CAT Sankalp Sale
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body className="pt-3 pb-4">
-          <div className="bg-light-blue rounded-3 p-3 mb-4 text-center border border-primary-custom">
-            <h4 className="fw-bold text-primary-custom mb-2">Unlock Premium at <span className="text-danger">25% OFF!</span></h4>
-            <p className="text-dark small mb-0 fw-medium">Use code <span className="badge bg-primary-custom fs-6 px-3 py-2 ms-1">SANKALP25</span> at checkout</p>
+        <Modal.Body className="px-4 px-md-5 pb-5 pt-3">
+          <div className="bg-light-blue rounded-4 p-4 mb-4 text-center border border-primary-custom position-relative shadow-sm" style={{ backgroundColor: '#f0e6ff' }}>
+            <h4 className="fw-bold text-primary-custom mb-3">Unlock Premium at <span className="text-danger">25% OFF!</span></h4>
+            <p className="text-dark small mb-0 fw-medium">Use code <span className="badge bg-white text-primary-custom border border-primary-custom fs-6 px-3 py-2 ms-1 shadow-sm">SANKALP25</span> at checkout</p>
           </div>
 
-          <p className="text-muted mb-4">
+          <p className="text-muted mb-4 text-center px-2">
             Take your speed math skills to the next level with our premium features. Perfect for competitive exams like CAT!
           </p>
           
           <ul className="list-unstyled mb-4">
             <li className="d-flex align-items-center mb-3">
-              <FaTimesCircle className="text-primary-custom me-3 fs-5" />
-              <span className="fw-medium">Advanced Operations (Multiplication & Division)</span>
+              <div className="text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px', backgroundColor: '#9b00ff' }}>
+                <FaTimesCircle size={14} />
+              </div>
+              <span className="fw-medium text-dark">Advanced Operations (Multiplication & Division)</span>
             </li>
             <li className="d-flex align-items-center mb-3">
-              <FaBolt className="text-warning me-3 fs-5" />
-              <span className="fw-medium">Higher Difficulties (Medium & Hard)</span>
+              <div className="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px' }}>
+                <FaBolt size={14} />
+              </div>
+              <span className="fw-medium text-dark">Higher Difficulties (Medium & Hard)</span>
             </li>
             <li className="d-flex align-items-center mb-3">
-              <FaPlusCircle className="text-success me-3 fs-5" />
-              <span className="fw-medium">Save all attempts and view detailed analytics</span>
+              <div className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3 flex-shrink-0 shadow-sm" style={{ width: '32px', height: '32px' }}>
+                <FaPlusCircle size={14} />
+              </div>
+              <span className="fw-medium text-dark">Save all attempts and view detailed analytics</span>
             </li>
           </ul>
 
           <Button 
-            variant="warning" 
-            className="w-100 py-3 fw-bold text-dark"
+            className="w-100 py-3 fw-bold border-0 shadow rounded-3 mt-2"
+            style={{ background: 'linear-gradient(135deg, #9b00ff 0%, #6a00ff 100%)', color: '#fff', fontSize: '1.05rem' }}
             onClick={() => {
               setShowSaleModal(false);
-              alert('Premium checkout flow coming soon! Do not forget to apply code SANKALP25.');
+              router.push('/checkout');
             }}
           >
             Upgrade to Premium Now

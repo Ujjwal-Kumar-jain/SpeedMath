@@ -44,10 +44,13 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.hasPurchased = (user as any).hasPurchased;
+      }
+      if (trigger === 'update' && session?.hasPurchased !== undefined) {
+        token.hasPurchased = session.hasPurchased;
       }
       return token;
     },
